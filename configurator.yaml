@@ -1,0 +1,10 @@
+---
+- name: CONFIGURATION OF 6WIND ROUTER
+  hosts: pe
+  gather_facts: no
+  connection: ansible.netcommon.netconf
+
+  roles:
+    - role: base
+      tags: base
+...
