@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURATION OF 6WIND ROUTER
-  hosts: pe
+  hosts: device_roles_dci
   gather_facts: no
   connection: ansible.netcommon.netconf
 

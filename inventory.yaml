@@ -1,0 +1,22 @@
+---
+plugin: "netbox.netbox.nb_inventory"
+api_endpoint: http://192.168.51.52:8000
+token: 0123456789abcdef0123456789abcdef01234567
+validate_certs: False
+config_context: True
+interfaces: True
+
+group_by:
+ - device_roles
+ - sites
+
+device_query_filters:
+  - has_primary_ip: 'true'
+
+query_filters:
+  - role: dci
+  - site: ka-nh-bs
+
+compose:
+  ansible_network_os: platform.slug
+...

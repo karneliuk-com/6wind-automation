@@ -12,6 +12,11 @@ The development environment has following components
 - Ansible 2.11.*
 - Netbox 3.0.*
 
+## Hosts
+Options to limite the hosts scope:
+- `device_roles_XXX`, where `XXX` is a device role slug from NetBox (e.g., `device_roles_dci`).
+- `sites_XXX`, where `XXX` is a site slug slug from NetBox (e.g., `sites_ams3`).
+
 ## Need Help?
 [Contact us](https://karneliuk.com/contact/) with your request and we will find the most suitable solution for you.
 

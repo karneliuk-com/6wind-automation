@@ -1,2 +1,6 @@
 ---
+- name: CHECK VARS
+  delegate_to: localhost
+  ansible.builtin.debug:
+    msg: "{{ inventory_hostname }}"
 ...
