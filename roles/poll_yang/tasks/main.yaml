@@ -2,18 +2,24 @@
 - name: 10. CREATE TEMPORARY DIRECTORY
   delegate_to: localhost
   ansible.builtin.file:
-    dest: "{{ output_directory }}"
+    dest: "{{ output_directory }}/{{ inventory_hostname }}"
     state: directory
+    recurse: True
 
-- name: 20. COLLECT LIST OF YANG MODULES
+- name: 20. COLLECT LIST OF SUPPORTED YANG MODULES
   ansible.netcommon.netconf_get:
-#    display: json
+    display: json
     filter: <netconf-state xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring"><schemas><schema/></schemas></netconf-state>
     lock: never
   register: supported_yang_modules
 
-- name: 30. DEBUG
+- name: 30. SAVE LIST OF SUPPORTED YANG MODULES
   delegate_to: localhost
-  ansible.builtin.debug:
-    var: supported_yang_modules
+  ansible.builtin.copy:
+    content: "{{ supported_yang_modules.output }}"
+    dest: "{{ output_directory }}/{{ inventory_hostname }}/000_supported_yang_modules.txt"
+
+- name: 40. COLLECT YANG MODULES
+  loop: "{{ supported_yang_modules.output.data['netconf-state'].schemas.schema }}"
+  ansible.builtin.include_tasks: poll_yang_module.yaml
 ...
