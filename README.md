@@ -25,8 +25,8 @@ There are two main use cases:
 ### Collecting Data
 To collect YANG modules from 6WIND network devices:
 ```
-ansible-playbook collector.yaml -t poll_yang`
-``
+ansible-playbook collector.yaml -t poll_yang
+```
 
 To collect the operational data from 6WIND network devices:
 ```
