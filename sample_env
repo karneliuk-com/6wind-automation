@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+export NETWORK_DEVICE_USERNAME=""
+export NETWORK_DEVICE_PASSWORD=""
+export NETBOX_BASE_URL=""
+export NETBOX_TOKEN=""

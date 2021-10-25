@@ -1,0 +1,21 @@
+---
+- name: 10. CREATE TEMPORARY DIRECTORY
+  delegate_to: localhost
+  ansible.builtin.file:
+    dest: "{{ output_directory.results }}"
+    state: directory
+    recurse: True
+
+- name: 20. COLLECT STATES
+  ansible.netcommon.netconf_get:
+    display: native
+    filter: <state xmlns="urn:6wind:vrouter"/>
+    lock: never
+  register: output_license
+
+- name: 30. SAVING STATES
+  delegate_to: localhost
+  ansible.builtin.copy:
+    content: "{{ output_license.output | to_nice_json }}"
+    dest: "{{ output_directory.results }}/{{ inventory_hostname }}_state.json"
+...

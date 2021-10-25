@@ -9,13 +9,28 @@ This repository contains the Ansible Roles to automate the configuration of 6WIN
 
 ## Environment
 The development environment has following components
-- Ansible 2.11.*
+- Ansible Core 2.11.*
 - Netbox 3.0.*
 
 ## Hosts
 Options to limite the hosts scope:
 - `device_roles_XXX`, where `XXX` is a device role slug from NetBox (e.g., `device_roles_dci`).
 - `sites_XXX`, where `XXX` is a site slug slug from NetBox (e.g., `sites_ams3`).
+
+## Usage
+There are two main use cases:
+- Data collection, which you can write then in your target system (e.g., NetBox or Monitoring system).
+- Change of network function's state, which is based on the information from NetBox in our case.
+
+### Collecting Data
+To collect YANG modules from 6WIND network devices:
+`ansible-playbook collector.yaml -t poll_yang`
+
+To collect the operational data from 6WIND network devices:
+`ansible-playbook collector.yaml -t poll_state_data`
+
+To collect the configuration from 6WIND network devices:
+`ansible-playbook collector.yaml -t poll_config_data`
 
 ## Need Help?
 [Contact us](https://karneliuk.com/contact/) with your request and we will find the most suitable solution for you.

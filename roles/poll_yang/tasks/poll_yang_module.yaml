@@ -12,5 +12,5 @@
   delegate_to: localhost
   ansible.builtin.copy:
     content: "{{ yang_module_content.output['nc:rpc-reply'].data }}"
-    dest: "{{ output_directory }}/{{ inventory_hostname }}/{{ item.identifier }}.yang"
+    dest: "{{ output_directory.yang }}/{{ inventory_hostname }}/{{ item.identifier }}.yang"
 ...

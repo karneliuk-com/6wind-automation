@@ -12,4 +12,10 @@
     - role: poll_yang
       tags: poll_yang
 
+    - role: poll_config_data
+      tags: poll_config_data
+
+    - role: poll_state_data
+      tags: poll_state_data
+
 ...

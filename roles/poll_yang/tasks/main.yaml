@@ -2,7 +2,7 @@
 - name: 10. CREATE TEMPORARY DIRECTORY
   delegate_to: localhost
   ansible.builtin.file:
-    dest: "{{ output_directory }}/{{ inventory_hostname }}"
+    dest: "{{ output_directory.yang }}/{{ inventory_hostname }}"
     state: directory
     recurse: True
 
@@ -17,7 +17,7 @@
   delegate_to: localhost
   ansible.builtin.copy:
     content: "{{ supported_yang_modules.output }}"
-    dest: "{{ output_directory }}/{{ inventory_hostname }}/000_supported_yang_modules.txt"
+    dest: "{{ output_directory.yang }}/{{ inventory_hostname }}/000_supported_yang_modules.txt"
 
 - name: 40. COLLECT YANG MODULES
   loop: "{{ supported_yang_modules.output.data['netconf-state'].schemas.schema }}"

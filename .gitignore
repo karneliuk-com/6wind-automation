@@ -2,3 +2,5 @@ venv/
 .env
 sample_configs/
 .yang/
+.ops/
+.results/
