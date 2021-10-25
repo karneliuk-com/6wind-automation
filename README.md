@@ -1,4 +1,4 @@
-# Automation of 6Wind Turbo Router
+# Automation of 6WIND Turbo Router
 This repository contains the Ansible Roles to automate the configuration of 6WINF Turbo Router network function relying on the NETCONF/YANG framework for device configuration and NetBox as a source of truth
 
 ## Use Cases
