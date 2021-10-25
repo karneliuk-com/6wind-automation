@@ -24,13 +24,19 @@ There are two main use cases:
 
 ### Collecting Data
 To collect YANG modules from 6WIND network devices:
-```ansible-playbook collector.yaml -t poll_yang```
+```
+ansible-playbook collector.yaml -t poll_yang`
+``
 
 To collect the operational data from 6WIND network devices:
-```ansible-playbook collector.yaml -t poll_state_data```
+```
+ansible-playbook collector.yaml -t poll_state_data
+```
 
 To collect the configuration from 6WIND network devices:
-```ansible-playbook collector.yaml -t poll_config_data```
+```
+ansible-playbook collector.yaml -t poll_config_data
+```
 
 ## Need Help?
 [Contact us](https://karneliuk.com/contact/) with your request and we will find the most suitable solution for you.
