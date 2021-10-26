@@ -19,4 +19,5 @@ query_filters:
 
 compose:
   ansible_network_os: platform.slug
+  nb_site_id: site.id
 ...

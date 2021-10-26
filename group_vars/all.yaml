@@ -2,4 +2,5 @@
 output_directory:
   results: .results
   yang: .yang
+  ops: .ops
 ...
