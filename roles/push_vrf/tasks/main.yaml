@@ -1,26 +1,5 @@
 ---
 ######################################
-#   POLLING EXTRA DATA FROM NETBOX   #
-######################################
-- name: 10. POLL SITE DATA
-  ansible.builtin.uri:
-    url: "{{ lookup('env', 'NETBOX_BASE_URL') }}/api/dcim/sites/?id={{ nb_site_id }}"
-    method: GET
-    return_content: yes
-    headers:
-      Authorization: Token {{ lookup('env', 'NETBOX_TOKEN') }}
-  register: netbox_site_data
-
-- name: 20. POLL VRFS DATA
-  ansible.builtin.uri:
-    url: "{{ lookup('env', 'NETBOX_BASE_URL') }}/api/ipam/vrfs/?limit=65535"
-    method: GET
-    return_content: yes
-    headers:
-      Authorization: Token {{ lookup('env', 'NETBOX_TOKEN') }}
-  register: netbox_vrfs_data
-
-######################################
 #    COLLECTING PRE CHANGE CONFIG    #
 ######################################
 - name: 30. PRE-CHANGE // CREATE TEMPORARY DIRECTORY

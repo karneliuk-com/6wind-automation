@@ -12,6 +12,11 @@
     target_vrf: DUMMY_VRF
 
   roles:
+    - role: collect_netbox
+      tags: 
+        - push_base
+        - push_vrf
+
     - role: push_base
       tags: push_base
 

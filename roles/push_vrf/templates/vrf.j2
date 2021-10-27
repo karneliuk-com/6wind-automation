@@ -2,10 +2,49 @@
     "config": {
         "@xmlns": "urn:ietf:params:xml:ns:netconf:base:1.0",
         "config": {
-            "@xmlns": "urn:6wind:vrouter",
-            "vrf": {
-                "name": "{{ target_vrf }}"
+            "@xmlns": "urn:6wind:vrouter"
+{% for vrf_dict in netbox_vrfs_data.json.results %}
+{% if vrf_dict.name == target_vrf %}
+            ,"vrf": {
+                "name": "{{ target_vrf }}",
+                "routing": {
+                    "@xmlns": "urn:6wind:vrouter/routing",
+                    "bgp": {
+                        "@xmlns": "urn:6wind:vrouter/bgp",
+                        "enabled": true,
+                        "as": "{{ netbox_site_data.json.results[0].asn }}",
+                        "router-id": "{% for interface_dict in interfaces %}{% if interface_dict.name == "loopback0"%}{% for ip_dict in interface_dict.ip_addresses %}{% if ip_dict.family.value == 4 and ip_dict.role.value == "loopback" %}{{ ip_dict.address.split("/") | first }}{% endif %}{% endfor %}{% endif %}{% endfor %}",
+                        "address-family": {
+                            "ipv4-unicast": {
+                                "redistribute": [
+                                    {
+                                        "protocol": "connected"
+                                    }
+                                ]
+                            },
+                            "l2vpn-evpn": {
+                                "advertise": [
+                                    "ipv4-unicast"
+                                ],
+                                "enabled": true,
+                                "advertise-all-vni": false,
+                                "auto-route-target": "disabled",
+                                "flooding": "head-end-replication",
+                                "export": {
+                                    "route-distinguisher": "{{ vrf_dict.rd }}",
+                                    "route-target": [{% for rt_dict in vrf_dict.export_targets %}{% if loop.index0 > 1%}, {% endif %}"{{ rt_dict.name }}"{% endfor %}]
+                                },
+                                "import": {
+                                    "route-target": [{% for rt_dict in vrf_dict.import_targets %}{% if loop.index0 > 1%}, {% endif %}"{{ rt_dict.name }}"{% endfor %}]
+
+                                }
+                            }
+                        }
+                    }
+                }
             }
+{% endif %}
+{% endfor %}
         }
     }
 }
