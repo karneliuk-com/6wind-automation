@@ -12,14 +12,18 @@
     target_vrf: DUMMY_VRF
 
   roles:
-    - role: collect_netbox
+    - role: 100_collect_netbox
       tags: 
-        - push_base
-        - push_vrf
+        - infrastructure
+        - customer
 
-    - role: push_base
-      tags: push_base
+    - role: 300_push_config
+      vars:
+        template_prefix: main
+      tags: infrastructure
 
-    - role: push_vrf
-      tags: push_vrf
+    - role: 300_push_config
+      vars:
+        template_prefix: non_main
+      tags: customer
 ...

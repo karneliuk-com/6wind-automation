@@ -25,18 +25,29 @@ There are two main use cases:
 ### Collecting Data
 To collect YANG modules from 6WIND network devices:
 ```
-ansible-playbook collector.yaml -t poll_yang
+ansible-playbook collector.yaml -t yang
 ```
 
 To collect the operational data from 6WIND network devices:
 ```
-ansible-playbook collector.yaml -t poll_state_data
+ansible-playbook collector.yaml -t state
 ```
 
 To collect the configuration from 6WIND network devices:
 ```
-ansible-playbook collector.yaml -t poll_config_data
+ansible-playbook collector.yaml -t config
 ```
+
+To configure the non-customer part (main VRF, base system, etc ) in 6WIND network devices:
+```
+ansible-playbook configurator.yaml -t infrastructure
+```
+
+To configure the customer part (main VRF, interfaces, VRRP, BGP, etc) in 6WIND network devices:
+```
+ansible-playbook configurator.yaml -t customer -e "target_vrf=XXX"
+```
+where XXX is the name of customer's VRF in NetBox
 
 ## Need Help?
 [Contact us](https://karneliuk.com/contact/) with your request and we will find the most suitable solution for you.

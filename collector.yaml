@@ -1,21 +1,26 @@
 ---
 - name: CONFIGURATION OF 6WIND ROUTER
   hosts: device_roles_dci
-  gather_facts: no
   connection: ansible.netcommon.netconf
 
   vars:
     ansible_user: "{{ lookup('env', 'NETWORK_DEVICE_USERNAME') }}"
     ansible_password: "{{ lookup('env', 'NETWORK_DEVICE_PASSWORD') }}"
-
+    ## Used for execution
+    execution_timestamp: "{{ ansible_date_time.iso8601_basic }}"
+    
   roles:
-    - role: poll_yang
-      tags: poll_yang
+    - role: 200_poll_yang_modules
+      tags: yang
 
-    - role: poll_config_data
-      tags: poll_config_data
+    - role: 201_poll_data
+      vars:
+        template_prefix: state
+      tags: state
 
-    - role: poll_state_data
-      tags: poll_state_data
+    - role: 201_poll_data
+      vars:
+        template_prefix: config
+      tags: config
 
 ...

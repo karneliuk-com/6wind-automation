@@ -1,0 +1,28 @@
+{
+    "config": {
+        "@xmlns": "urn:ietf:params:xml:ns:netconf:base:1.0",
+        "config": {
+            "@xmlns": "urn:6wind:vrouter",
+            "vrf": {
+                "name": "main",
+                "routing": {
+                    "@xmlns": "urn:6wind:vrouter/routing",
+                    "bgp": {
+                        "@xmlns": "urn:6wind:vrouter/bgp",
+                        "enabled": true,
+                        "as": "{{ netbox_site_data.json.results[0].asn }}",
+                        "router-id": "{% for interface_dict in interfaces %}{% if interface_dict.name == "loopback0" %}{% for ip_dict in interface_dict.ip_addresses %}{% if ip_dict.family.value == 4 and ip_dict.role.value == "loopback" %}{{ ip_dict.address.split("/") | first }}{% endif %}{% endfor %}{% endif %}{% endfor %}",
+                        "address-family": {
+                            "l2vpn-evpn": {
+                            "enabled": true,
+                            "advertise-all-vni": true,
+                            "auto-route-target": "disabled",
+                            "flooding": "head-end-replication"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

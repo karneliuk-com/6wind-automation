@@ -1,0 +1,61 @@
+---
+######################################
+#    COLLECTING PRE CHANGE CONFIG    #
+######################################
+- name: 300.20.10. PRE-CHANGE // COLLECT CONFIG OF {{ template_prefix }} {{ item }}
+  ansible.netcommon.netconf_get:
+    display: native
+    filter: "{{ lookup('template', 'check_{{ template_prefix }}_{{ item }}.j2') }}"
+  register: config_pre_change
+
+- name: 300.20.20. PRE-CHANGE // SAVING CONFIG
+  delegate_to: localhost
+  ansible.builtin.copy:
+    content: "{{ config_pre_change.output | to_nice_json }}"
+    dest: "{{ output_directory.ops }}/{{ execution_timestamp }}/{{ inventory_hostname }}_{{ template_prefix }}_{{ item }}_pre_change.json"
+
+######################################
+#      PERFORMING CHANGE CONFIG      #
+######################################
+- name: 300.20.30. CHANGE // PREPARE NETCONF MESSAGE BODY
+  delegate_to: localhost
+  ansible.builtin.template:
+    src: "config_{{ template_prefix }}_{{ item }}.j2"
+    dest: "{{ output_directory.ops }}/{{ execution_timestamp }}/{{ inventory_hostname }}_{{ template_prefix }}_{{ item }}_change.json"
+
+- name: 300.20.40. CHANGE // APPLY CONFIGURATION FOR {{ template_prefix }} {{ item }}
+  ansible.netcommon.netconf_config:
+    format: json
+    content: "{{ lookup('template', 'config_{{ template_prefix }}_{{ item }}.j2') }}"
+
+######################################
+#    COLLECTING POST CHANGE CONFIG   #
+######################################
+- name: 300.20.50. POST-CHANGE // COLLECT CONFIG OF {{ template_prefix }} {{ item }}
+  ansible.netcommon.netconf_get:
+    display: native
+    filter: "{{ lookup('template', 'check_{{ template_prefix }}_{{ item }}.j2') }}"
+  register: config_post_change
+
+- name: 300.20.60. POST-CHANGE // SAVING CONFIG
+  delegate_to: localhost
+  ansible.builtin.copy:
+    content: "{{ config_post_change.output | to_nice_json }}"
+    dest: "{{ output_directory.ops }}/{{ execution_timestamp }}/{{ inventory_hostname }}_{{ template_prefix }}_{{ item }}_post_change.json"
+
+######################################
+#    COMPARING PRE AND POST CHANGE   #
+######################################
+- name: 300.20.70. COMPARING PRE AND POST CHANGE
+  delegate_to: localhost
+  ansible.utils.fact_diff:
+    before: "{{ config_pre_change.output | ansible.utils.to_paths }}"
+    after: "{{ config_post_change.output | ansible.utils.to_paths }}"
+  register: vrf_config_diff
+
+- name: 300.20.80. SAVING DIFF
+  delegate_to: localhost
+  ansible.builtin.copy:
+    content: "{{ vrf_config_diff | to_nice_json }}"
+    dest: "{{ output_directory.ops }}/{{ execution_timestamp }}/{{ inventory_hostname }}_{{ template_prefix }}_{{ item }}_diff.json"
+...
