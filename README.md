@@ -22,6 +22,21 @@ There are two main use cases:
 - Data collection, which you can write then in your target system (e.g., NetBox or Monitoring system).
 - Change of network function's state, which is based on the information from NetBox in our case.
 
+### Preparing
+1. Create the environment file `.env` out of `sample_env`:
+```
+cp sample_env .env
+```
+2. Fill in `.env` with information per setup.
+3. Make th file execuable
+```
+chmod 775 .env
+```
+4. Run it:
+```
+/.env
+```
+
 ### Collecting Data
 To collect YANG modules from 6WIND network devices:
 ```
