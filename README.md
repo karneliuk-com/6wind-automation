@@ -22,7 +22,7 @@ There are two main use cases:
 - Data collection, which you can write then in your target system (e.g., NetBox or Monitoring system).
 - Change of network function's state, which is based on the information from NetBox in our case.
 
-### Preparing
+### Preparation
 1. Create the environment file `.env` out of `sample_env`:
 ```
 cp sample_env .env
@@ -37,7 +37,7 @@ chmod 775 .env
 /.env
 ```
 
-### Collecting Data
+### Interaction with 6WIND Turbo Router
 To collect YANG modules from 6WIND network devices:
 ```
 ansible-playbook collector.yaml -t yang
