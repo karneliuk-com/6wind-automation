@@ -1,0 +1,21 @@
+{
+    "config": {
+        "@xmlns": "urn:6wind:vrouter"
+{% for vrf_dict in netbox_vrfs_data.json.results %}
+{% if vrf_dict.name == target_vrf %}
+        ,"vrf": {
+            "name": "{{ target_vrf }}",
+            "vrrp": {
+                "@xmlns": "urn:6wind:vrouter/vrrp"
+            },
+            "interface": {
+                "@xmlns": "urn:6wind:vrouter/interface",
+                "vrrp": {
+                    "@xmlns": "urn:6wind:vrouter/vrrp"
+                }
+            }
+        }
+{% endif %}
+{% endfor %}
+    }
+}

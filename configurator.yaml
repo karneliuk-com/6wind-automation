@@ -17,12 +17,17 @@
         - infrastructure
         - customer
 
-    - role: 300_push_config
+    - role: 300_prepare_vars
+      tags: 
+        - infrastructure
+        - customer
+
+    - role: 301_push_config
       vars:
         template_prefix: main
       tags: infrastructure
 
-    - role: 300_push_config
+    - role: 301_push_config
       vars:
         template_prefix: non_main
       tags: customer

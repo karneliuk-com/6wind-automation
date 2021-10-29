@@ -1,0 +1,58 @@
+{
+    "config": {
+        "@xmlns": "urn:ietf:params:xml:ns:netconf:base:1.0",
+        "config": {
+            "@xmlns": "urn:6wind:vrouter"
+{% for vrf_dict in netbox_vrfs_data.json.results %}
+{% if vrf_dict.name == target_vrf %}
+            ,"vrf": {
+                "name": "{{ target_vrf }}",
+                "vrrp": {
+                    "@xmlns": "urn:6wind:vrouter/vrrp",
+                    "router-id": "{% for interface_dict in interfaces %}{% if interface_dict.name == "loopback0"%}{% for ip_dict in interface_dict.ip_addresses %}{% if ip_dict.family.value == 4 and ip_dict.role.value == "loopback" %}{{ ip_dict.address.split("/") | first }}{% endif %}{% endfor %}{% endif %}{% endfor %}",
+                    "enabled": true
+                }
+{% for interface_dict in interfaces  %}
+{% if interface_dict.ip_addresses is defined %}
+{% for ip_dict in interface_dict.ip_addresses %}
+{% if ip_dict.vrf is defined and ip_dict.vrf.name is defined and ip_dict.vrf.name == target_vrf %}
+{% if ip_dict.role.value is defined and ip_dict.role.value == "vrrp" %}
+                ,"interface": {
+                    "@xmlns": "urn:6wind:vrouter/interface",
+                    "vrrp": {
+                        "@xmlns": "urn:6wind:vrouter/vrrp",
+                        "name": "vrrp{{ interface_dict.name | regex_replace('bridge') }}",
+                        "link-interface": "{{ interface_dict.name }}",
+                        "enabled": true,
+                        "version": 2,
+                        "garp-delay": 5,
+                        "use-vmac": false,
+                        "vmac-xmit-base": false,
+                        "priority": {% if inventory_hostname | regex_search('^.*-a$') %}150{% else %}100{% endif %},
+                        "init-state": "backup",
+                        "preempt": true,
+                        "preempt-delay": 120,
+                        "advertisement-interval": 1000,
+                        "track-link-interface": true,
+                        "track-fast-path": true,
+                        "mtu": 9000,
+                        "vrid": 2,
+                        "virtual-address": [
+                            {
+                                "ip": "{{ ip_dict.address | regex_replace('^(.*)/\\d+$', '\\1/32') }}"
+                            }
+                        ]
+
+                    }
+                }
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+            }
+{% endif %}
+{% endfor %}
+        }
+    }
+}

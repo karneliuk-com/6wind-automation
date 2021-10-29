@@ -25,42 +25,42 @@ There are two main use cases:
 ### Preparation
 1. Create the environment file `.env` out of `sample_env`:
 ```
-cp sample_env .env
+$ cp sample_env .env
 ```
 2. Fill in `.env` with information per setup.
 3. Make th file execuable
 ```
-chmod 775 .env
+$ chmod 775 .env
 ```
 4. Run it:
 ```
-/.env
+$ . .env
 ```
 
 ### Interaction with 6WIND Turbo Router
 To collect YANG modules from 6WIND network devices:
 ```
-ansible-playbook collector.yaml -t yang
+$ ansible-playbook collector.yaml -t yang
 ```
 
 To collect the operational data from 6WIND network devices:
 ```
-ansible-playbook collector.yaml -t state
+$ ansible-playbook collector.yaml -t state
 ```
 
 To collect the configuration from 6WIND network devices:
 ```
-ansible-playbook collector.yaml -t config
+$ ansible-playbook collector.yaml -t config
 ```
 
 To configure the non-customer part (main VRF, base system, etc ) in 6WIND network devices:
 ```
-ansible-playbook configurator.yaml -t infrastructure
+$ ansible-playbook configurator.yaml -t infrastructure
 ```
 
 To configure the customer part (main VRF, interfaces, VRRP, BGP, etc) in 6WIND network devices:
 ```
-ansible-playbook configurator.yaml -t customer -e "target_vrf=XXX"
+$ ansible-playbook configurator.yaml -t customer -e "target_vrf=XXX"
 ```
 where XXX is the name of customer's VRF in NetBox
 

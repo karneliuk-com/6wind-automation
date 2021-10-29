@@ -1,16 +1,17 @@
 ---
-- name: 300.10. CREATE TEMPORARY DIRECTORY
+- name: 301.10. CREATE TEMPORARY DIRECTORY
   delegate_to: localhost
   ansible.builtin.file:
     dest: "{{ output_directory.ops }}/{{ execution_timestamp }}"
     state: directory
     recurse: True
 
-- name: 300.20. RUN CONFIGURATION LOOP
+- name: 301.20. RUN CONFIGURATION LOOP
   ansible.builtin.include_tasks:
     file: change.yaml
   loop:
     - vrf
+    - vrrp
 #    - interfaces
     - bgp
 ...

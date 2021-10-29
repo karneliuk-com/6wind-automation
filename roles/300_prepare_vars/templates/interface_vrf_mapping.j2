@@ -1,0 +1,38 @@
+{% set vrf_interface = {} %}
+{% set interfaces_in_vrf = [] %}
+{% if interfaces is defined %}
+{#   Looking interface to VRF mapping based on IP addresses #}
+{%   for interface_dict in interfaces  %}
+{%     if interface_dict.ip_addresses is defined %}
+{%       for ip_dict in interface_dict.ip_addresses %}
+{%         if ip_dict.vrf is defined and ip_dict.vrf.name is defined %}
+{%           if vrf_interface[ip_dict.vrf.name] is not defined %}
+{%             if vrf_interface.update({ip_dict.vrf.name: [interface_dict.name]}) %}{% endif %}
+{%           else %}
+{%             if vrf_interface[ip_dict.vrf.name].append(interface_dict.name) %}{% endif %}
+{%           endif %}
+{%           if interfaces_in_vrf.append(interface_dict.name) %}{% endif %}
+{%         endif %}
+{%       endfor %}
+{%     endif %}
+{%   endfor %}
+{#   Looking interface to VRF mapping based on parent interfaces #}
+{%   for interface_dict in interfaces  %}
+{%     if interface_dict.parent.name is defined %}
+{%       if interface_dict.parent.name in interfaces_in_vrf %}
+{%         for vrf_name, vrf_int_values in vrf_interface.items() %}
+{%           if interface_dict.parent.name in vrf_int_values %}
+{%             if vrf_interface[vrf_name].append(interface_dict.name) %}{% endif %}
+{%           endif %}
+{%         endfor %}
+{%       endif %}
+{%     endif %}
+{%   endfor %}
+{#   Mapping all the rest to VRF main #}
+{%   for interface_dict in interfaces  %}
+{%     if interface_dict.name not in interfaces_in_vrf %}
+{%       if vrf_interface["main"].append(interface_dict.name) %}{% endif %}
+{%     endif %}
+{%   endfor %}
+{% endif %}
+{{ vrf_interface }}
