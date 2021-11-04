@@ -2,8 +2,4 @@
 - name: 300.10. MAP INTERFACES TO VRFS
   ansible.builtin.set_fact:
     interface_vrf_mapping: "{{ lookup('template', 'interface_vrf_mapping.j2') }}"
-
-- name: 300.20. DEBUG
-  ansible.builtin.debug:
-    var: interface_vrf_mapping
 ...

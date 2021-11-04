@@ -1,0 +1,39 @@
+{
+    "config": {
+        "@xmlns": "urn:ietf:params:xml:ns:netconf:base:1.0",
+        "config": {
+            "@xmlns": "urn:6wind:vrouter"
+{% for vrf_dict in netbox_vrfs_data.json.results %}
+{%   if vrf_dict.name == target_vrf %}
+            ,"vrf": {
+                "name": "{{ target_vrf }}",
+                "interface": {
+                    "@xmlns": "urn:6wind:vrouter/interface"
+{%    for mapping_vrf_name, mapping_vrf_interface_list in interface_vrf_mapping.items() %}
+{%      if target_vrf == mapping_vrf_name %}
+{%        for interface_dict in interfaces %}
+{%          if interface_dict.name in mapping_vrf_interface_list%}
+{%            if "bridge" in interface_dict.name %}
+                    ,"bridge": {
+                        "@xmlns": "urn:6wind:vrouter/bridge",
+{%            elif "vxlan" in interface_dict.name %}
+                    ,"vxlan": {
+                        "@xmlns": "urn:6wind:vrouter/vxlan",
+{%            else %}
+                    ,"vlan": {
+                        "@xmlns": "urn:6wind:vrouter/vlan",
+{%            endif %}
+                        "name": "{{ interface_dict.name }}",
+                        "enabled": {% if interface_dict.enabled %}true{% else %}false{% endif %}
+                    }
+{%          endif %}
+{%        endfor %}
+{%      endif %}
+{%    endfor %}
+                }
+            }
+{%   endif %}
+{% endfor %}
+        }
+    }
+}
