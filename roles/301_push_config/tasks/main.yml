@@ -10,8 +10,8 @@
   ansible.builtin.include_tasks:
     file: change.yaml
   loop:
-#    - vrf
-#    - vrrp
+    - vrf
+    - vrrp
     - interface
-#    - bgp
+    - bgp
 ...

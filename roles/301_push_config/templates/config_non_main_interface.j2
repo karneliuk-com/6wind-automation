@@ -12,20 +12,65 @@
 {%    for mapping_vrf_name, mapping_vrf_interface_list in interface_vrf_mapping.items() %}
 {%      if target_vrf == mapping_vrf_name %}
 {%        for interface_dict in interfaces %}
-{%          if interface_dict.name in mapping_vrf_interface_list%}
+{%          if interface_dict.name in mapping_vrf_interface_list %}
+{# Bridgig-specific part (BSP) #}
 {%            if "bridge" in interface_dict.name %}
-                    ,"bridge": {
+                    ,"bridge": [{
                         "@xmlns": "urn:6wind:vrouter/bridge",
-{%            elif "vxlan" in interface_dict.name %}
-                    ,"vxlan": {
-                        "@xmlns": "urn:6wind:vrouter/vxlan",
-{%            else %}
-                    ,"vlan": {
-                        "@xmlns": "urn:6wind:vrouter/vlan",
-{%            endif %}
                         "name": "{{ interface_dict.name }}",
-                        "enabled": {% if interface_dict.enabled %}true{% else %}false{% endif %}
-                    }
+{%              if interface_dict.ip_addresses is defined %}
+{# BSP: IPv4 addresses #}
+                        "ipv4": {
+                            "enabled": true,
+                            "address" : [
+{%                for ip_dict in interface_dict.ip_addresses %}
+{%                  if (ip_dict.role.value is not defined or (ip_dict.role.value is defined and ip_dict.role.value != "vrrp")) and ip_dict.family.value == 4 %}
+                              {"ip": "{{ ip_dict.address }}"},
+{%                  endif %}
+{%                endfor %}
+                            ]
+                        },
+{# BSP: IPv6 addresses #}
+                        "ipv6": {
+                            "enabled": true,
+                            "address" : [
+{%                for ip_dict in interface_dict.ip_addresses %}
+{%                  if (ip_dict.role.value is not defined or (ip_dict.role.value is defined and ip_dict.role.value != "vrrp")) and ip_dict.family.value == 6 %}
+                                {"ip": "{{ ip_dict.address }}"},
+{%                  endif %}
+{%                endfor %}
+                            ]
+                        },
+{%              endif %}
+{# BSP: Dependent interfaces at bridge #}
+                        "link-interface": [
+{%              for dependent_interface_dict in interfaces %}
+{%                if dependent_interface_dict.parent and dependent_interface_dict.parent.name == interface_dict.name %}
+                            {
+                                "slave": "{{ dependent_interface_dict.name }}",
+                                "learning": {% if dependent_interface_dict.tags and "vxlan-mac-learning" in dependent_interface_dict.tags %}true{% else %}false{% endif %}
+                            },
+{%                endif %}
+{%              endfor %}
+                        ],
+{%            elif "vxlan" in interface_dict.name %}
+                    ,"vxlan": [{
+                        "@xmlns": "urn:6wind:vrouter/vxlan",
+                        "name": "{{ interface_dict.name }}",
+                        "vni": "{{ interface_dict.name | regex_replace('^vxlan(\\d+)$', '\\1') }}",
+                        "link-interface": "loopback0",
+                        "link-vrf": "main",
+{%            else %}
+                    ,"vlan": [{
+                        "@xmlns": "urn:6wind:vrouter/vlan",
+                        "name": "{{ interface_dict.name }}",
+                        "vlan-id": "{{ interface_dict.name | regex_replace('^\\S+\\.(\\d+)$', '\\1') }}",
+                        "link-interface": "{{ interface_dict.name | regex_replace('^(\\S+)\\.\\d+$', '\\1') }}",
+                        "link-vrf": "main",
+{%            endif %}
+                        "enabled": {% if interface_dict.enabled %}true{% else %}false{% endif %},
+                        "mtu": {{ interface_dict.mtu | default("9000", true) }}
+                    }]
 {%          endif %}
 {%        endfor %}
 {%      endif %}
