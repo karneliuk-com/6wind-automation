@@ -1,5 +1,5 @@
 ---
-- name: 40.10. POLL YANG MODULE FROM DEVICES
+- name: 200.40.10. POLL YANG MODULE FROM DEVICES
   ansible.netcommon.netconf_rpc:
     display: json
     rpc: get-schema
@@ -8,7 +8,7 @@
       identifier: "{{ item.identifier }}"
   register: yang_module_content
 
-- name: 40.20. SAVE YANG MODULE
+- name: 200.40.20. SAVE YANG MODULE
   delegate_to: localhost
   ansible.builtin.copy:
     content: "{{ yang_module_content.output['nc:rpc-reply'].data }}"

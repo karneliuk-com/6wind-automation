@@ -32,7 +32,7 @@ $ cp sample_env .env
 ```
 $ chmod 775 .env
 ```
-4. Run it:
+4. Source the paramters from the created file:
 ```
 $ . .env
 ```

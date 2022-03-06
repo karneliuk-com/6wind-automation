@@ -2,7 +2,7 @@
 ######################################
 #   POLLING EXTRA DATA FROM NETBOX   #
 ######################################
-- name: 10. POLL SITE DATA
+- name: 100.10. POLL SITE DATA
   ansible.builtin.uri:
     url: "{{ lookup('env', 'NETBOX_BASE_URL') }}/api/dcim/sites/?id={{ nb_site_id }}"
     method: GET
@@ -11,7 +11,7 @@
       Authorization: Token {{ lookup('env', 'NETBOX_TOKEN') }}
   register: netbox_site_data
 
-- name: 20. POLL VRFS DATA
+- name: 100.20. POLL VRFS DATA
   ansible.builtin.uri:
     url: "{{ lookup('env', 'NETBOX_BASE_URL') }}/api/ipam/vrfs/?limit=65535"
     method: GET
